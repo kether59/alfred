@@ -1,5 +1,7 @@
 package com.jarvis.board;
 
+import com.jarvis.board.bean.CreateTaskRequest;
+import com.jarvis.board.bean.UpdateTaskStatusRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -37,24 +39,5 @@ public class TaskController {
     @PatchMapping("/{id}/status")
     public BoardTask updateStatus(@PathVariable long id, @Valid @RequestBody UpdateTaskStatusRequest request) {
         return taskService.updateStatus(id, request.status());
-    }
-
-    public record CreateTaskRequest(
-            @NotBlank @Size(max = 200) String title,
-            @Size(max = 2000) String description,
-            TaskPriority priority) {
-        public CreateTaskRequest {
-            if (priority == null) {
-                priority = TaskPriority.MEDIUM;
-            }
-        }
-    }
-
-    public record UpdateTaskStatusRequest(TaskStatus status) {
-        public UpdateTaskStatusRequest {
-            if (status == null) {
-                throw new IllegalArgumentException("Le statut est obligatoire.");
-            }
-        }
     }
 }
