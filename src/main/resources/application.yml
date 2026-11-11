@@ -1,0 +1,38 @@
+server:
+  port: ${SERVER_PORT:8080}
+  address: ${SERVER_ADDRESS:0.0.0.0}
+
+spring:
+  application:
+    name: jarvis-core
+  datasource:
+    url: ${DATABASE_URL:jdbc:sqlite:./data/jarvis.db}
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: false
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+jarvis:
+  ollama:
+    base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+    model: ${OLLAMA_MODEL:gemma2:2b}
+    timeout: ${OLLAMA_TIMEOUT:120s}
+  discord:
+    enabled: ${DISCORD_ENABLED:false}
+    token: ${DISCORD_BOT_TOKEN:}
+    allowed-user-ids: ${DISCORD_ALLOWED_USER_IDS:}
+    command-channel-id: ${DISCORD_CHANNEL_ID:}
+    digest-channel-id: ${DISCORD_DIGEST_CHANNEL_ID:}
+  scheduling:
+    digest-cron: ${TASK_DIGEST_CRON:0 0 8 * * *}
+  rag:
+    documents-directory: ${DOCUMENTS_DIRECTORY:./data/documents}
+    chunk-size: ${RAG_CHUNK_SIZE:1200}
+    chunk-overlap: ${RAG_CHUNK_OVERLAP:150}

@@ -1,0 +1,32 @@
+services:
+  jarvis-core:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: jarvis-core:local
+    container_name: jarvis-core
+    restart: unless-stopped
+    init: true
+    mem_limit: 768m
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+    environment:
+      SERVER_PORT: 8080
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-gemma2:2b}
+      DISCORD_ENABLED: ${DISCORD_ENABLED:-false}
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN:-}
+      DISCORD_ALLOWED_USER_IDS: ${DISCORD_ALLOWED_USER_IDS:-}
+      DISCORD_CHANNEL_ID: ${DISCORD_CHANNEL_ID:-}
+      DISCORD_DIGEST_CHANNEL_ID: ${DISCORD_DIGEST_CHANNEL_ID:-}
+      DOCUMENTS_DIRECTORY: /data/documents
+      DATABASE_URL: jdbc:sqlite:/data/jarvis.db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - jarvis-data:/data
+
+volumes:
+  jarvis-data:

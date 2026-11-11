@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Jarvis-Core — Board</title>
+    <style>
+        body { font: 16px system-ui, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; color: #172033; }
+        h1 { margin-bottom: .25rem; } .muted { color: #657087; }
+        form { display: flex; gap: .5rem; flex-wrap: wrap; margin: 1rem 0; }
+        input, select, button { padding: .6rem; font: inherit; }
+        input[name=title] { flex: 1; min-width: 220px; }
+        article { display: flex; justify-content: space-between; gap: 1rem; align-items: center; border: 1px solid #dce1e8; border-radius: 8px; padding: .8rem 1rem; margin: .6rem 0; }
+        article form { margin: 0; } .error { color: #b42318; }
+    </style>
+</head>
+<body>
+<h1>Jarvis-Core</h1>
+<p class="muted">Board de tâches local</p>
+<p class="error" th:if="${error}" th:text="${error}"></p>
+<form method="post" action="/tasks">
+    <input name="title" maxlength="200" placeholder="Nouvelle tâche" required>
+    <input name="description" maxlength="2000" placeholder="Description (facultative)">
+    <select name="priority">
+        <option th:each="priority : ${priorities}" th:value="${priority}" th:text="${priority}"></option>
+    </select>
+    <button type="submit">Ajouter</button>
+</form>
+<section th:if="${#lists.isEmpty(tasks)}"><p>Aucune tâche pour le moment.</p></section>
+<article th:each="task : ${tasks}">
+    <div>
+        <strong th:text="${task.title}"></strong>
+        <div class="muted" th:text="${task.status + ' · priorité ' + task.priority}"></div>
+        <div th:if="${task.description}" th:text="${task.description}"></div>
+    </div>
+    <form method="post" action="/tasks/status">
+        <input type="hidden" name="id" th:value="${task.id}">
+        <select name="status">
+            <option th:each="status : ${statuses}" th:value="${status}" th:text="${status}" th:selected="${status == task.status}"></option>
+        </select>
+        <button type="submit">Modifier</button>
+    </form>
+</article>
+</body>
+</html>
